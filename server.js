@@ -7,6 +7,7 @@ const app = express();
 // middleware untuk membaca json dari request body ke kita
 app.use(express.json());
 
+// get / mengambil data
 // default url = health check
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -35,24 +36,51 @@ app.get("/api/v1/cars", (req, res) => {
     message: "Success get car data",
     isSuccess: true,
     totalData: cars.length,
-    data: { cars },
+    data: {
+      cars,
+    },
   });
 });
 
-// response.data.cars
+// /:id ini url params
+app.get("/api/v1/cars/:id", (req, res) => {
+  const idParams = req.params.id * 1;
+  const car = cars.find((i) => i.id === idParams);
+  //salah satu basic error handling
+  if (!car) {
+    console.log("not found");
+    return res.status(404).json({
+      status: "Failed",
+      message: `Car data with ID ${idParams} is not found`,
+      isSuccess: false,
+      data: null,
+    });
+  }
+  res.status(200).json({
+    status: "success",
+    message: "Success get car data",
+    isSuccess: true,
+    data: {
+      car,
+    },
+  });
+});
 
+//post / input data
 app.post("/api/v1/cars", (req, res) => {
-  const newData = req.body;
-  cars.push(newData);
+  const newCar = req.body;
+  cars.push(newCar);
   fs.writeFile(
     `${__dirname}/assets/data/cars.json`,
     JSON.stringify(cars),
     (err) => {
       res.status(201).json({
         status: "success",
-        message: "Success get car data",
+        message: "Success add new car data",
         isSuccess: true,
-        data: { car: newData },
+        data: {
+          car: newCar,
+        },
       });
     }
   );
