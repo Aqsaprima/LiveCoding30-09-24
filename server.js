@@ -86,6 +86,96 @@ app.post("/api/v1/cars", (req, res) => {
   );
 });
 
+//update
+app.patch("/api/v1/cars/:id", (req, res) => {
+  const id = req.params.id * 1;
+
+  //object destructuring
+  const { name, year, type } = req.body;
+
+  //mencari data by id
+  const car = cars.find((i) => i.id === id);
+
+  //mencari index dari data
+  const carIndex = cars.findIndex((j) => j.id === id);
+
+  if (!car) {
+    console.log("not found");
+    return res.status(404).json({
+      status: "Failed",
+      message: `Failed get car data with id : ${id}`,
+      isSuccess: false,
+      data: null,
+    });
+  }
+
+  //update sesuai request body
+  //object assign = menggunakan objek spread operator
+  cars[carIndex] = { ...cars[carIndex], ...req.body };
+
+  //get new data for response api
+  const newCar = cars.find((i) => i.id === id);
+
+  //masukkan / rewrite data JSON dalam file
+  fs.writeFile(
+    `${__dirname}/assets/data/cars.json`,
+    JSON.stringify(cars),
+    (err) => {
+      res.status(201).json({
+        status: "success",
+        message: `Success update car data id : ${id}`,
+        isSuccess: true,
+        data: {
+          newCar,
+        },
+      });
+    }
+  );
+});
+
+//delete
+app.delete("/api/v1/cars/:id", (req, res) => {
+  const id = req.params.id * 1;
+
+  //object destructuring
+  const { name, year, type } = req.body;
+
+  //mencari data by id
+  const car = cars.find((i) => i.id === id);
+
+  //mencari index dari data
+  const carIndex = cars.findIndex((j) => j.id === id);
+
+  if (!car) {
+    console.log("not found");
+    return res.status(404).json({
+      status: "Failed",
+      message: `Failed delete car data with id : ${id}`,
+      isSuccess: false,
+      data: null,
+    });
+  }
+
+  //melakukan splice untuk hapus data
+  cars.splice(carIndex, 1);
+
+  //masukkan / rewrite data JSON dalam file
+  fs.writeFile(
+    `${__dirname}/assets/data/cars.json`,
+    JSON.stringify(cars),
+    (err) => {
+      res.status(201).json({
+        status: "success",
+        message: `Success update car data id : ${id}`,
+        isSuccess: true,
+        data: {
+          car,
+        },
+      });
+    }
+  );
+});
+
 //middleware / handler utk url yang tidak dapat diakses karena tidak ada di aplikasi
 //membuat middleware
 app.use((req, res, next) => {
