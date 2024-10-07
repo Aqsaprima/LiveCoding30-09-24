@@ -2,7 +2,7 @@
 
 // initialisasi node js project nya, install package2 yg digunakan d project nya
 2. npm init 
-3. npm install express morgan nodemon pg pg-hstore sequelize 
+3. npm install express morgan nodemon pg pg-hstore sequelize sequelize-cli
 
 // configurasi npm dan DB koneksi
 4. configurasi package.json, spt script dev : nodemon index.js, dll.
